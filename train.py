@@ -16,6 +16,7 @@ def train_model_epoch(model,
                       current_epoch,
                       total_epoches,
                       log_freq=10):
+    model.train()
     accu_meter = AverageMeter()
     loss_meter = AverageMeter()
     for current_batch_count, data in enumerate(dataloader):
@@ -30,15 +31,29 @@ def train_model_epoch(model,
         loss_meter.update(loss_value.detach().cpu().numpy(), len_samples)
         accu_value = (torch.argmax(output, dim=1) == labels).sum().detach().cpu().numpy() / len_samples
         accu_meter.update(accu_value, len_samples)
+        print(
+            f"[{current_epoch}/{total_epoches}],[{current_batch_count}/{len(dataloader)}] "
+            f"Loss:{loss_meter.avg:.4f},Accu:{accu_meter.avg:.4f}")
         print(accu_meter.avg, loss_meter)
 
 
 @torch.no_grad()
 def val_model(model, dataloader, loss_func, current_epoch, total_epoches):
     model.eval()
+    accu_meter = AverageMeter()
+    loss_meter = AverageMeter()
+    for current_batch_count, data in enumerate(dataloader):
+        image, labels = data[0].to(device), data[1].to(device)
+        output = model(image)
+        predicted_labels = torch.argmax(output, dim=1)
+        num_of_equal_labels = (predicted_labels == labels).sum().cpu().numpy()
+        loss_value = loss_func(labels, output).detach().cpu().numpy()
+        loss_meter.update(loss_value, len(data[0]))
+        accu_meter.update(num_of_equal_labels / len(data[0]), len(data[0]))
 
+        print(f"[{current_epoch}/{total_epoches}]] "
+              f"Loss:{loss_meter.avg:.4f},Accu:{accu_meter.avg:.4f}")
 
-#   TODO
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
