@@ -34,7 +34,7 @@ def train_model_epoch(model,
         print(
             f"[{current_epoch}/{total_epoches}],[{current_batch_count}/{len(dataloader)}] "
             f"Loss:{loss_meter.avg:.4f},Accu:{accu_meter.avg:.4f}")
-        print(accu_meter.avg, loss_meter)
+        # print(accu_meter.avg, loss_meter)
 
 
 @torch.no_grad()
@@ -47,11 +47,11 @@ def val_model(model, dataloader, loss_func, current_epoch, total_epoches):
         output = model(image)
         predicted_labels = torch.argmax(output, dim=1)
         num_of_equal_labels = (predicted_labels == labels).sum().cpu().numpy()
-        loss_value = loss_func(labels, output).detach().cpu().numpy()
+        loss_value = loss_func(output, labels).detach().cpu().numpy()
         loss_meter.update(loss_value, len(data[0]))
         accu_meter.update(num_of_equal_labels / len(data[0]), len(data[0]))
 
-        print(f"[{current_epoch}/{total_epoches}]] "
+        print(f"VAL [{current_epoch}/{total_epoches}]] "
               f"Loss:{loss_meter.avg:.4f},Accu:{accu_meter.avg:.4f}")
 
 
