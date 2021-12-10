@@ -16,13 +16,13 @@ class LeNet(nn.Module):
                 out_channels=16,
                 kernel_size=5
             ),
-            nn.Sigmoid(),
+            nn.ReLU(),
             nn.MaxPool2d(kernel_size=2),
             nn.Flatten(start_dim=1, end_dim=-1),
             nn.Linear(in_features=16 * 5 * 5, out_features=120),
-            nn.Sigmoid(),
+            nn.ReLU(),
             nn.Linear(in_features=120, out_features=84),
-            nn.Sigmoid(),
+            nn.ReLU(),
             nn.Linear(in_features=84, out_features=10)
         )
 
