@@ -1,4 +1,4 @@
 ## **Just an archive 🐈**
 
-Undergraduate Project - Artificial Intelligence - BayesianNetworks
+Undergraduate Project - Artificial Intelligence - Lenet
 
